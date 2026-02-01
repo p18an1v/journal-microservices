@@ -9,17 +9,21 @@
    CSS VARIABLES / DESIGN TOKENS
    =================================== */
 :root {
-  /* Colors - Dark Theme */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a25;
-  --bg-card: rgba(26, 26, 37, 0.7);
+  /* Colors - Charcoal & Pumpkin Theme */
+  --bg-primary: #1b2f3a;
+  /* Darker shade of charcoal for main bg */
+  --bg-secondary: #233D4C;
+  /* The main Charcoal color */
+  --bg-tertiary: #2d4d60;
+  /* Lighter charcoal for inputs/cards */
+  --bg-card: rgba(35, 61, 76, 0.7);
 
   /* Accent Colors */
-  --accent-primary: #6366f1;
-  --accent-secondary: #8b5cf6;
-  --accent-tertiary: #a855f7;
-  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --accent-primary: #FD802E;
+  /* Pumpkin */
+  --accent-secondary: #ff9f5e;
+  --accent-tertiary: #ffb885;
+  --accent-gradient: linear-gradient(135deg, #FD802E 0%, #ff9f5e 100%);
 
   /* Text Colors */
   --text-primary: #ffffff;
@@ -232,6 +236,8 @@ a {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+  background: linear-gradient(to right, #1b2f3a, #233D4C);
+  /* Charcoal Gradient */
 }
 
 .hero-background {
@@ -251,7 +257,8 @@ a {
 .orb-1 {
   width: 600px;
   height: 600px;
-  background: rgba(99, 102, 241, 0.4);
+  background: rgba(253, 128, 46, 0.2);
+  /* Pumpkin #FD802E */
   top: -200px;
   right: -100px;
   animation-delay: 0s;
@@ -260,7 +267,7 @@ a {
 .orb-2 {
   width: 500px;
   height: 500px;
-  background: rgba(168, 85, 247, 0.3);
+  background: rgba(255, 159, 94, 0.2);
   bottom: -150px;
   left: -100px;
   animation-delay: -5s;
@@ -269,7 +276,7 @@ a {
 .orb-3 {
   width: 400px;
   height: 400px;
-  background: rgba(236, 72, 153, 0.3);
+  background: rgba(253, 128, 46, 0.15);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -608,6 +615,8 @@ a {
   width: 100%;
   height: 100%;
   z-index: -1;
+  background: linear-gradient(to right, #1b2f3a, #233D4C);
+  /* Charcoal Gradient */
 }
 
 .auth-card {
