@@ -1,6 +1,5 @@
 package com.user.util;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +16,17 @@ public class JwtUtil {
 
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)              // USER IDENTIFIER
+                .setSubject(email) // USER IDENTIFIER
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateToken(String email, Integer userId) {
+        return Jwts.builder()
+                .setSubject(email) // USER IDENTIFIER
+                .claim("userId", userId) // Include userId in token
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -66,7 +75,6 @@ public class JwtUtil {
 
         return true;
     }
-
 
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);

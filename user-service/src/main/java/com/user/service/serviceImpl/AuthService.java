@@ -1,7 +1,5 @@
 package com.user.service.serviceImpl;
 
-
-
 import com.user.dto.LoginDTO;
 import com.user.dto.ResetPasswordDTO;
 import com.user.dto.UserDTO;
@@ -37,8 +35,8 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
-    //register
-    public UserModel register(UserDTO dto){
+    // register
+    public UserModel register(UserDTO dto) {
         logger.info("Attempting to register user with email: {}", dto.getEmail());
 
         if (repository.findByEmail(dto.getEmail()).isPresent()) {
@@ -58,13 +56,12 @@ public class AuthService {
         emailService.sendEmail(
                 saved.getEmail(),
                 "Registration Successful",
-                "Hi " + saved.getEmail() + ",\n\nYour registration was successful.\n\nThanks!"
-        );
+                "Hi " + saved.getEmail() + ",\n\nYour registration was successful.\n\nThanks!");
 
         return mapper.toModel(saved);
     }
 
-    //LOGIN (LOCAL)
+    // LOGIN (LOCAL)
     public String login(LoginDTO dto) {
 
         User user = repository.findByEmail(dto.getEmail())
@@ -82,11 +79,10 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return jwtUtil.generateToken(user.getEmail());
+        return jwtUtil.generateToken(user.getEmail(), user.getUserId());
     }
 
-
-    //resent token link send
+    // resent token link send
     public void sendResetToken(String email) {
 
         User user = repository.findByEmail(email)
@@ -94,19 +90,17 @@ public class AuthService {
 
         String token = jwtUtil.generateResetToken(email);
 
-        String resetLink =
-                "http://localhost:5173/reset-password?token=" + token;
+        String resetLink = "http://localhost:5173/reset-password?token=" + token;
 
         emailService.sendEmail(
                 user.getEmail(),
                 "Reset Your Password",
                 "Click the link below to reset your password:\n\n" +
                         resetLink +
-                        "\n\nThis link is valid for 15 minutes."
-        );
+                        "\n\nThis link is valid for 15 minutes.");
     }
 
-    //password update
+    // password update
     public void resetPassword(ResetPasswordDTO dto) {
 
         if (!jwtUtil.isResetTokenValid(dto.getToken())) {
@@ -124,7 +118,6 @@ public class AuthService {
         emailService.sendEmail(
                 user.getEmail(),
                 "Password Updated",
-                "Your password has been successfully updated."
-        );
+                "Your password has been successfully updated.");
     }
 }
