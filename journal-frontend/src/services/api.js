@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = '';
 
 // Helper to get auth headers
 const getAuthHeaders = () => {
@@ -20,6 +20,7 @@ export const authAPI = {
     
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'Registration failed' }));
+      console.error('Registration API Error:', error);
       throw new Error(error.message || 'Registration failed');
     }
     
@@ -27,18 +28,27 @@ export const authAPI = {
   },
 
   login: async (email, password) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Login failed' }));
-      throw new Error(error.message || 'Invalid credentials');
+    try {
+      console.log('Attempting login for:', email);
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      console.log('Login Response Status:', response.status);
+      
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        console.error('Login API Error Payload:', error);
+        throw new Error(error.message || 'Invalid credentials');
+      }
+      
+      return response.json();
+    } catch (err) {
+      console.error('Login Network/Logic Error:', err);
+      throw err;
     }
-    
-    return response.json();
   }
 };
 
@@ -94,6 +104,21 @@ export const journalAPI = {
     }
     
     return true;
+  },
+
+  update: async (id, title, content) => {
+    const response = await fetch(`${API_BASE_URL}/api/journals/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ title, content })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to update journal' }));
+      throw new Error(error.message || 'Failed to update journal');
+    }
+    
+    return response.json();
   }
 };
 

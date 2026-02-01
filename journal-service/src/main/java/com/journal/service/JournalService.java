@@ -1,6 +1,5 @@
 package com.journal.service;
 
-
 import com.journal.entity.Journal;
 
 import java.util.List;
@@ -14,4 +13,6 @@ public interface JournalService {
     Journal getJournalById(Integer journalId);
 
     void deleteJournal(Integer journalId);
+
+    Journal updateJournal(Integer journalId, Journal journal);
 }

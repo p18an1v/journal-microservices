@@ -80,4 +80,21 @@ public class JournalController {
                 journalService.deleteJournal(id);
                 return ResponseEntity.noContent().build();
         }
+
+        // UPDATE JOURNAL
+        @PutMapping("/{id}")
+        public ResponseEntity<JournalResponseDTO> updateJournal(
+                        @PathVariable Integer id,
+                        @RequestBody Journal journal) {
+
+                Journal updated = journalService.updateJournal(id, journal);
+
+                JournalResponseDTO response = new JournalResponseDTO(
+                                updated.getJournalId(),
+                                updated.getTitle(),
+                                updated.getContent(),
+                                updated.getUserId());
+
+                return ResponseEntity.ok(response);
+        }
 }

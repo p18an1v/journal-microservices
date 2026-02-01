@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { journalAPI } from '../services/api';
 import JournalCard from '../components/JournalCard';
 
+
 const Dashboard = () => {
   const { user } = useAuth();
   const [journals, setJournals] = useState([]);
@@ -16,6 +17,7 @@ const Dashboard = () => {
   
   // Form states
   const [newJournal, setNewJournal] = useState({ title: '', content: '' });
+  const [editingId, setEditingId] = useState(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(null);
 
@@ -52,19 +54,44 @@ const Dashboard = () => {
     
     setCreating(true);
     try {
-      const created = await journalAPI.create(
-        newJournal.title, 
-        newJournal.content, 
-        user.userId
-      );
-      setJournals(prev => [created, ...prev]);
+      if (editingId) {
+        // Update existing journal
+        const updated = await journalAPI.update(
+          editingId,
+          newJournal.title,
+          newJournal.content
+        );
+        setJournals(prev => prev.map(j => j.journalId === editingId ? updated : j));
+      } else {
+        // Create new journal
+        const created = await journalAPI.create(
+          newJournal.title, 
+          newJournal.content, 
+          user.userId
+        );
+        setJournals(prev => [created, ...prev]);
+      }
+      
       setNewJournal({ title: '', content: '' });
+      setEditingId(null);
       setShowCreateModal(false);
     } catch (err) {
-      setError(err.message || 'Failed to create journal');
+      setError(err.message || 'Failed to save journal');
     } finally {
       setCreating(false);
     }
+  };
+
+  const openCreateModal = () => {
+    setNewJournal({ title: '', content: '' });
+    setEditingId(null);
+    setShowCreateModal(true);
+  };
+
+  const handleEditJournal = (journal) => {
+    setNewJournal({ title: journal.title, content: journal.content });
+    setEditingId(journal.journalId);
+    setShowCreateModal(true);
   };
 
   const handleDeleteJournal = async (journalId) => {
@@ -95,6 +122,22 @@ const Dashboard = () => {
     return 'Good Evening';
   };
 
+  useEffect(() => {
+  if (showViewModal || showCreateModal) {
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = 'auto';
+  }
+
+  return () => {
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = 'auto';
+  };
+}, [showViewModal, showCreateModal]);
+
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-container container py-5 mt-5">
@@ -115,7 +158,7 @@ const Dashboard = () => {
             <div className="col-md-4 text-md-end mt-3 mt-md-0">
               <button 
                 className="btn btn-primary btn-lg btn-glow"
-                onClick={() => setShowCreateModal(true)}
+                onClick={openCreateModal}
               >
                 <span className="me-2">✏️</span>
                 New Journal
@@ -151,7 +194,7 @@ const Dashboard = () => {
             <p>Create your first journal entry and start documenting your thoughts!</p>
             <button 
               className="btn btn-primary btn-glow"
-              onClick={() => setShowCreateModal(true)}
+              onClick={openCreateModal}
             >
               Create Your First Journal
             </button>
@@ -164,6 +207,7 @@ const Dashboard = () => {
                   journal={journal}
                   onView={handleViewJournal}
                   onDelete={handleDeleteJournal}
+                  onEdit={handleEditJournal}
                 />
                 {deleting === journal.journalId && (
                   <div className="delete-overlay">
@@ -178,16 +222,17 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Create Modal */}
+      {/* Create/Edit Modal */}
       {showCreateModal && (
-        <div className="modal-backdrop show" onClick={() => setShowCreateModal(false)}>
-          <div className="modal show d-block" tabIndex="-1">
+        <>
+          <div className="modal-backdrop show"></div>
+          <div className="modal show d-block" tabIndex="-1" onClick={() => setShowCreateModal(false)}>
             <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
-              <div className="modal-content">
+              <div className="modal-content dark-modal">
                 <div className="modal-header">
                   <h5 className="modal-title">
-                    <span className="me-2">✨</span>
-                    Create New Journal
+                    <span className="me-2">{editingId ? '✏️' : '✨'}</span>
+                    {editingId ? 'Edit Journal' : 'Create New Journal'}
                   </h5>
                   <button 
                     type="button" 
@@ -236,12 +281,12 @@ const Dashboard = () => {
                       {creating ? (
                         <>
                           <span className="spinner-border spinner-border-sm me-2"></span>
-                          Creating...
+                          Saving...
                         </>
                       ) : (
                         <>
                           <span className="me-2">💾</span>
-                          Save Journal
+                          {editingId ? 'Update Journal' : 'Save Journal'}
                         </>
                       )}
                     </button>
@@ -250,15 +295,16 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* View Modal */}
       {showViewModal && selectedJournal && (
-        <div className="modal-backdrop show" onClick={() => setShowViewModal(false)}>
-          <div className="modal show d-block" tabIndex="-1">
+        <>
+          <div className="modal-backdrop show"></div>
+          <div className="modal show d-block" tabIndex="-1" onClick={() => setShowViewModal(false)}>
             <div className="modal-dialog modal-dialog-centered modal-lg" onClick={e => e.stopPropagation()}>
-              <div className="modal-content">
+              <div className="modal-content dark-modal">
                 <div className="modal-header">
                   <h5 className="modal-title">{selectedJournal.title}</h5>
                   <button 
@@ -287,7 +333,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

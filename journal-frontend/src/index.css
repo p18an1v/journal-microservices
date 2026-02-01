@@ -1049,3 +1049,70 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-hover);
 }
+
+
+/* DARK MODAL THEME */
+/* DARK MODAL THEME */
+.dark-modal {
+  background-color: #1a1a25;
+  /* Matches bg-tertiary */
+  color: #ffffff;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-backdrop.show {
+  opacity: 0.8;
+  background-color: #000;
+  z-index: 1040;
+}
+
+.modal.show {
+  z-index: 1050;
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  /* extra dimming */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  display: flex !important;
+  align-items: center;
+  min-height: calc(100% - 1.75rem);
+  justify-content: center;
+  margin: 1.75rem auto;
+}
+
+/* Header */
+.dark-modal .modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Footer */
+.dark-modal .modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+/* Inputs & textarea */
+.dark-modal .form-control {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.dark-modal .form-control:focus {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+}
+
+.dark-modal .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}

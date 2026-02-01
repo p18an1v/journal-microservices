@@ -50,4 +50,20 @@ public class JournalServiceImpl implements JournalService {
 
         journalRepository.delete(journal);
     }
+
+    @Override
+    public Journal updateJournal(Integer journalId, Journal journal) {
+        Journal existing = journalRepository.findById(journalId)
+                .orElseThrow(() -> new JournalNotFoundException(journalId));
+
+        if (journal.getTitle() != null && !journal.getTitle().isEmpty()) {
+            existing.setTitle(journal.getTitle());
+        }
+
+        if (journal.getContent() != null && !journal.getContent().isEmpty()) {
+            existing.setContent(journal.getContent());
+        }
+
+        return journalRepository.save(existing);
+    }
 }

@@ -1,4 +1,4 @@
-const JournalCard = ({ journal, onView, onDelete }) => {
+const JournalCard = ({ journal, onView, onDelete, onEdit }) => {
   const truncateContent = (content, maxLength = 120) => {
     if (content.length <= maxLength) return content;
     return content.substring(0, maxLength) + '...';
@@ -22,6 +22,12 @@ const JournalCard = ({ journal, onView, onDelete }) => {
             onClick={() => onView(journal)}
           >
             👁️ View
+          </button>
+          <button 
+            className="btn btn-outline-info btn-sm"
+            onClick={() => onEdit && onEdit(journal)}
+          >
+            ✏️ Edit
           </button>
           <button 
             className="btn btn-outline-danger btn-sm"
