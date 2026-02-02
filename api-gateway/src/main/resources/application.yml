@@ -6,12 +6,45 @@ spring:
     name: API-GATEWAY
 
 
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: user-service-auth
+            uri: lb://USER-SERVICE
+            predicates:
+              - Path=/auth/**
+          - id: user-service-api
+            uri: lb://USER-SERVICE
+            predicates:
+              - Path=/api/users/**
+          - id: journal-service
+            uri: lb://JOURNAL-SERVICE
+            predicates:
+              - Path=/api/journals/**
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_KEY}
+            scope: profile,email
+
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
-
-
+      defaultZone: https://journal-eureka-server.onrender.com/eureka
+  instance:
+    hostname: ${RENDER_EXTERNAL_HOSTNAME}
+    instance-id: ${spring.application.name}:${random.value}
+    non-secure-port-enabled: false
+    secure-port-enabled: true
+    secure-port: 443
+    status-page-url: https://${RENDER_EXTERNAL_HOSTNAME}/actuator/info
+    health-check-url: https://${RENDER_EXTERNAL_HOSTNAME}/actuator/health
+    home-page-url: https://${RENDER_EXTERNAL_HOSTNAME}
 
 jwt:
   secret: MySuperSecretKeyThatIsSameEverywhere

@@ -63,7 +63,8 @@ public class SecurityConfig {
                 config.setAllowCredentials(true);
                 config.setAllowedOriginPatterns(Arrays.asList(
                                 "http://localhost:*",
-                                "http://127.0.0.1:*"));
+                                "http://127.0.0.1:*",
+                                "https://*.onrender.com"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                 config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
