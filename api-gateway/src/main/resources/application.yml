@@ -36,7 +36,11 @@ eureka:
   client:
     service-url:
       defaultZone: https://journal-eureka-server.onrender.com/eureka
+    healthcheck:
+      enabled: true
   instance:
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
     hostname: ${RENDER_EXTERNAL_HOSTNAME}
     instance-id: ${spring.application.name}:${random.value}
     non-secure-port-enabled: false
